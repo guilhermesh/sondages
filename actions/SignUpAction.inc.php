@@ -22,7 +22,32 @@ class SignUpAction extends Action {
 	 * @see Action::run()
 	 */
 	public function run() {
-		/* TODO  */
+		$nickname = $_POST['signUpLogin'];
+		$password = $_POST['signUpPassword'];
+		$password2 = $_POST['signUpPassword2'];
+
+		if ($password==$password2) {
+			$reponse = $this->database->addUser($nickname, $password);
+			if($reponse===true){
+				$this->setModel(new MessageModel());
+				$this->getModel()->setMessage('Inscription réussie');
+				$this->setView(getViewByName("Message"));
+			} else{
+				// Erreur d'ajout dans la base de données
+				$this->setModel(new MessageModel());
+				$this->getModel()->setMessage($reponse);
+				$this->setView(getViewByName('SignUpForm'));
+			}
+
+		} else {
+			// Mots de passe différents
+			$this->setModel(new MessageModel());
+			$this->getModel()->setMessage("Le mot de passe et sa confirmation sont différents.");
+			$this->setView(getViewByName('SignUpForm'));
+		}
+		
+		
+		
 	}
 
 	private function createSignUpFormView($message) {
