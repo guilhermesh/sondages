@@ -82,9 +82,18 @@ class Database {
 	 * @return boolean True si le couple est correct, false sinon.
 	 */
 	public function checkPassword($nickname, $password) {
-		/* TODO  */
-		return true;
+		//Récupérer le password correspondant au nickname donné
+		$nickname = $this->connection->quote($nickname);
+			
+		$query = "SELECT password FROM users WHERE nickname=$nickname";    //var_dump($query);die;
+		$result = $this->connection->query($query);    //var_dump($result);
+		
+		$dbPassword = $result->fetch(PDO::FETCH_ASSOC);    //var_dump($dbPassword);
+			//die(password_hash('123', PASSWORD_BCRYPT)); ;
+		//Vérifier le password avec la fonction de hashage
+		return password_verify($password, $dbPassword['password']);
 	}
+
 
 	/**
 	 * Ajoute un nouveau compte utilisateur si le pseudonyme est valide et disponible et
